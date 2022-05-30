@@ -1,37 +1,36 @@
-const Ambassador = require("../models/ambassador_model.js");
+const Collection = require("../models/collection_model.js");
 const cloudinary = require("../cloudinary_config");
 const fs = require("fs");
 
-module.exports.createAmbassador = async (req, res, next) => {
-  let { name, social, colors } = req.body;
-  social = JSON.parse(social);
+module.exports.createCollection = async (req, res, next) => {
+  let { title, slug, colors } = req.body;
   try {
     const uploader = async (path) =>
-      await cloudinary.uploads(path, `DevStyle/Ambassador`);
+      await cloudinary.uploads(path, `DevStyle/Collections`);
     const { path } = req.file;
     const newPath = await uploader(path);
     fs.unlinkSync(path);
     if (!newPath) {
       return res.status(500).json({ message: "sorry an error occur" });
     }
-    const ambassador = new Ambassador({
-      name,
-      social,
+    const collection = new Collection({
+      title,
+      slug,
       colors,
       image: newPath,
     });
 
-    ambassador
+    collection
       .save()
       .then((_) => {
         res.status(200).json({
-          message: "Ambassador created successfully !!",
+          message: "Collection created successfully !!",
         });
       })
       .catch((error) => {
         console.log(error.message);
         return res.status(500).json({
-          message: "Ambassador not created",
+          message: "Collection not created",
         });
       });
   } catch (error) {
@@ -42,8 +41,8 @@ module.exports.createAmbassador = async (req, res, next) => {
   }
 };
 
-module.exports.getAllAmbassadors = (req, res, next) => {
-  Ambassador.find()
+module.exports.getAllCollections = (req, res, next) => {
+  Collection.find()
     .then((results) => {
       res.status(200).json({ message: results });
     })
@@ -54,8 +53,8 @@ module.exports.getAllAmbassadors = (req, res, next) => {
     });
 };
 
-module.exports.getOneAmbassador = (req, res, next) => {
-  Ambassador.findOne({ _id: req.params.id })
+module.exports.getOneCollection = (req, res, next) => {
+  Collection.findOne({ _id: req.params.id })
     .then((result) => {
       res.status(200).json({ message: result });
     })
@@ -66,11 +65,11 @@ module.exports.getOneAmbassador = (req, res, next) => {
     });
 };
 
-module.exports.updateOneAmbassador = (req, res, next) => {
-  Ambassador.findOneAndUpdate(
+module.exports.updateOneCollection = (req, res, next) => {
+  Collection.findOneAndUpdate(
     { _id: req.params.id },
-    { ...req.body },
-    { new: true }
+    { ...req.body }
+    // { new: true }
   )
     .then((result) => {
       res.status(200).json({ message: result });
@@ -82,8 +81,8 @@ module.exports.updateOneAmbassador = (req, res, next) => {
     });
 };
 
-module.exports.deleteOneAmbassador = (req, res, next) => {
-  Ambassador.deleteOne({ _id: req.params.id })
+module.exports.deleteOneCollection = (req, res, next) => {
+  Collection.deleteOne({ _id: req.params.id })
     .then((result) => {
       res.status(200).json({ message: result });
     })
@@ -94,27 +93,41 @@ module.exports.deleteOneAmbassador = (req, res, next) => {
     });
 };
 
-module.exports.updateAmbassadorImage = async (req, res, next) => {
+module.exports.updateCollectionImage = async (req, res, next) => {
   let id = req.params.id;
   const uploader = async (path) =>
-    await cloudinary.uploads(path, `DevStyle/Ambassador`);
+    await cloudinary.uploads(path, `DevStyle/Collection`);
   const { path } = req.file;
   const newPath = await uploader(path);
   fs.unlinkSync(path);
   if (!newPath) res.status(500).json({ message: "sorry an error occured" });
-  await Ambassador.findOneAndUpdate(
+  await Collection.findOneAndUpdate(
     { _id: id },
     {
       image: newPath,
       ...req.body,
     }
+    // { new: true }
   )
     .then((result) => {
       res.status(200).json({
-        message: `Ambassador Image was updated !`,
+        message: `Collection Image was updated !`,
       });
     })
     .catch((error) =>
-      res.status(404).json({ message: "Ambassador does not exist" })
+      res.status(404).json({ message: "Collection does not exist" })
     );
+};
+
+module.exports.updateViews = (req, res, next) => {
+  Collection.findOneAndUpdate(
+    { _id: req.params.id },
+    { $inc: { views: 1 } },
+    { new: 1 }
+  )
+    .then((result) => res.status(200).json({ message: "Success" }))
+    .catch((error) => {
+      console.log(error);
+      res.status(500).json({ message: "Error" });
+    });
 };

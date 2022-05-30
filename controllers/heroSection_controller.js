@@ -1,37 +1,34 @@
-const Ambassador = require("../models/ambassador_model.js");
+const HeroSection = require("../models/heroSection_model.js");
 const cloudinary = require("../cloudinary_config");
 const fs = require("fs");
 
-module.exports.createAmbassador = async (req, res, next) => {
-  let { name, social, colors } = req.body;
-  social = JSON.parse(social);
+module.exports.createHeroSection = async (req, res, next) => {
+  let { text } = req.body;
   try {
     const uploader = async (path) =>
-      await cloudinary.uploads(path, `DevStyle/Ambassador`);
+      await cloudinary.uploads(path, `DevStyle/HeroSection`);
     const { path } = req.file;
     const newPath = await uploader(path);
     fs.unlinkSync(path);
     if (!newPath) {
       return res.status(500).json({ message: "sorry an error occur" });
     }
-    const ambassador = new Ambassador({
-      name,
-      social,
-      colors,
+    const heroSection = new HeroSection({
+      text,
       image: newPath,
     });
 
-    ambassador
+    heroSection
       .save()
       .then((_) => {
         res.status(200).json({
-          message: "Ambassador created successfully !!",
+          message: "HeroSection created successfully !!",
         });
       })
       .catch((error) => {
         console.log(error.message);
         return res.status(500).json({
-          message: "Ambassador not created",
+          message: "HeroSection not created",
         });
       });
   } catch (error) {
@@ -42,8 +39,8 @@ module.exports.createAmbassador = async (req, res, next) => {
   }
 };
 
-module.exports.getAllAmbassadors = (req, res, next) => {
-  Ambassador.find()
+module.exports.getAllHeroSections = (req, res, next) => {
+  HeroSection.find()
     .then((results) => {
       res.status(200).json({ message: results });
     })
@@ -54,8 +51,8 @@ module.exports.getAllAmbassadors = (req, res, next) => {
     });
 };
 
-module.exports.getOneAmbassador = (req, res, next) => {
-  Ambassador.findOne({ _id: req.params.id })
+module.exports.getOneHeroSection = (req, res, next) => {
+  HeroSection.findOne({ _id: req.params.id })
     .then((result) => {
       res.status(200).json({ message: result });
     })
@@ -66,14 +63,14 @@ module.exports.getOneAmbassador = (req, res, next) => {
     });
 };
 
-module.exports.updateOneAmbassador = (req, res, next) => {
-  Ambassador.findOneAndUpdate(
+module.exports.updateOneHeroSection = (req, res, next) => {
+  HeroSection.findOneAndUpdate(
     { _id: req.params.id },
-    { ...req.body },
-    { new: true }
+    { ...req.body }
+    // { new: true }
   )
     .then((result) => {
-      res.status(200).json({ message: result });
+      res.status(200).json({ message: "Updated" });
     })
     .catch((error) => {
       console.log(error.message);
@@ -82,10 +79,10 @@ module.exports.updateOneAmbassador = (req, res, next) => {
     });
 };
 
-module.exports.deleteOneAmbassador = (req, res, next) => {
-  Ambassador.deleteOne({ _id: req.params.id })
+module.exports.deleteOneHeroSection = (req, res, next) => {
+  HeroSection.deleteOne({ _id: req.params.id })
     .then((result) => {
-      res.status(200).json({ message: result });
+      res.status(200).json({ message: "Deleted" });
     })
     .catch((error) => {
       console.log(error.message);
@@ -94,27 +91,28 @@ module.exports.deleteOneAmbassador = (req, res, next) => {
     });
 };
 
-module.exports.updateAmbassadorImage = async (req, res, next) => {
+module.exports.updateHeroSectionImage = async (req, res, next) => {
   let id = req.params.id;
   const uploader = async (path) =>
-    await cloudinary.uploads(path, `DevStyle/Ambassador`);
+    await cloudinary.uploads(path, `DevStyle/HeroSection`);
   const { path } = req.file;
   const newPath = await uploader(path);
   fs.unlinkSync(path);
   if (!newPath) res.status(500).json({ message: "sorry an error occured" });
-  await Ambassador.findOneAndUpdate(
+  await HeroSection.findOneAndUpdate(
     { _id: id },
     {
       image: newPath,
       ...req.body,
     }
+    // { new: true }
   )
     .then((result) => {
       res.status(200).json({
-        message: `Ambassador Image was updated !`,
+        message: `HeroSection Image was updated !`,
       });
     })
     .catch((error) =>
-      res.status(404).json({ message: "Ambassador does not exist" })
+      res.status(404).json({ message: "HeroSection does not exist" })
     );
 };

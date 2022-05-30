@@ -1,23 +1,28 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const diffHistory = require("mongoose-diff-history/diffHistory");
+
 const { Schema } = mongoose;
 
-const AmbassadorSchema = new Schema({
-	name: {
-		type: String,
-		required: true
-	},
-	surname: {
-		type: String
-	},
-	image:{},
-	description:{
-		type: String
-	},
-	networks:[{
-		name:String,
-        link:String,
-	}],
-
-},{timestamps:true})
-
-module.exports = mongoose.model('Ambassador', AmbassadorSchema);
+const ambassadorSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    image: {},
+    social: [
+      {
+        id: Schema.Types.Number,
+        name: String,
+        link: String,
+      },
+    ],
+    colors: {
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+ambassadorSchema.plugin(diffHistory.plugin);
+module.exports = mongoose.model("Ambassador", ambassadorSchema);

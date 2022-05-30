@@ -1,23 +1,38 @@
-const mongoose=require('mongoose')
+const mongoose = require("mongoose");
+const diffHistory = require("mongoose-diff-history/diffHistory");
 
-const UserSchema= mongoose.Schema({
-
-    name:String,
-    surname:String,
-    email:{
-        type:String,
-        require:true,
-        unique:true
+const userSchema = mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      require: true,
     },
-    phone:Number,
-    password:{
-        type:String,
-        required:true
+    lastName: {
+      type: String,
+      require: true,
     },
-    role:{
-        type:String,
-        required:true
-    }
-},{timestamps:true})
+    email: {
+      type: String,
+      require: true,
+      unique: true,
+    },
+    phone: {
+      type: Number,
+      require: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-module.exports=mongoose.model('User',UserSchema);
+userSchema.plugin(diffHistory.plugin);
+
+module.exports = mongoose.model("User", userSchema);
