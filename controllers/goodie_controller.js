@@ -1,6 +1,7 @@
 const Goodie = require("../models/goodie_model.js");
 const cloudinary = require("../cloudinary_config");
 const fs = require("fs");
+const { SchemaTypes, Schema } = require("mongoose");
 
 module.exports.createGoodie = async (req, res, next) => {
   let urls = [];
@@ -30,6 +31,7 @@ module.exports.createGoodie = async (req, res, next) => {
       fs.unlinkSync(path);
     }
     if (urls.length == 0) {
+      console.log("No images");
       return res.status(500).json({ message: "sorry an error occur" });
     }
     const goodie = new Goodie({
@@ -85,7 +87,9 @@ module.exports.getAllGoodies = (req, res, next) => {
 };
 
 module.exports.getOneGoodie = (req, res, next) => {
-  Goodie.findOne({ _id: req.params.id })
+  Goodie.findOne({ slug: req.params.slug })
+    .populate("fromCollection")
+    .populate("size")
     .then((result) => {
       res.status(200).json({ message: result });
     })
@@ -109,7 +113,10 @@ module.exports.getGoodiesOfCollection = (req, res, next) => {
 };
 
 module.exports.getHotGoodiesOfCollection = (req, res, next) => {
-  Goodie.find({ fromCollection: req.params.collectionID })
+  Goodie.find({
+    fromCollection: req.params.collectionID,
+    _id: { $ne: req.params.goodieID },
+  })
     .skip(req.headers.skip)
     .sort({ views: -1, likes: -1 })
     .limit(4)
@@ -188,7 +195,7 @@ module.exports.updateGoodieImage = async (req, res, next) => {
 
 module.exports.updateLikes = (req, res, next) => {
   Goodie.findOneAndUpdate(
-    { _id: req.params.id },
+    { slug: req.params.slug },
     { $inc: { likes: 1 } },
     { new: 1 }
   )
@@ -201,7 +208,7 @@ module.exports.updateLikes = (req, res, next) => {
 
 module.exports.updateViews = (req, res, next) => {
   Goodie.findOneAndUpdate(
-    { _id: req.params.id },
+    { slug: req.params.slug },
     { $inc: { views: 1 } },
     { new: 1 }
   )

@@ -12,6 +12,7 @@ const collectionSchema = new Schema(
       type: String,
       required: true,
       lowercase: true,
+      unique: true,
     },
     colors: {
       type: String,

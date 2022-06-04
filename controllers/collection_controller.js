@@ -1,4 +1,5 @@
 const Collection = require("../models/collection_model.js");
+const Goodie = require("../models/goodie_model.js");
 const cloudinary = require("../cloudinary_config");
 const fs = require("fs");
 
@@ -65,11 +66,31 @@ module.exports.getOneCollection = (req, res, next) => {
     });
 };
 
+module.exports.getOneCollectionAndGoodies = (req, res, next) => {
+  Collection.findOne({ slug: req.params.slug })
+    .then((collection) => {
+      Goodie.find({ fromCollection: collection._id })
+        .then((goodies) => {
+          res.status(200).json({ message: { collection, goodies } });
+        })
+        .catch((error) => {
+          console.log(error.message);
+
+          res.status(500).json({ message: error.message });
+        });
+    })
+    .catch((error) => {
+      console.log(error.message);
+
+      res.status(500).json({ message: error.message });
+    });
+};
+
 module.exports.updateOneCollection = (req, res, next) => {
   Collection.findOneAndUpdate(
     { _id: req.params.id },
-    { ...req.body }
-    // { new: true }
+    { ...req.body },
+    { new: true }
   )
     .then((result) => {
       res.status(200).json({ message: result });
@@ -106,8 +127,8 @@ module.exports.updateCollectionImage = async (req, res, next) => {
     {
       image: newPath,
       ...req.body,
-    }
-    // { new: true }
+    },
+    { new: true }
   )
     .then((result) => {
       res.status(200).json({
@@ -121,7 +142,7 @@ module.exports.updateCollectionImage = async (req, res, next) => {
 
 module.exports.updateViews = (req, res, next) => {
   Collection.findOneAndUpdate(
-    { _id: req.params.id },
+    { slug: req.params.slug },
     { $inc: { views: 1 } },
     { new: 1 }
   )

@@ -25,18 +25,20 @@ module.exports.register = (req, res, next) => {
             { id: user._id, role: user.role },
             process.env.JWT_KEY
           );
-          res.status(200).json({
+          return res.status(200).json({
             message: { user, token },
           });
         })
         .catch((error) => {
           console.log(error);
-          res.status(500).json({ message: "error: account not created" });
+          return res
+            .status(500)
+            .json({ message: "error: account not created" });
         });
     })
     .catch((error) => {
       console.log("bcrypt", error);
-      res.status(500).json({ message: "An error occured" });
+      return res.status(500).json({ message: "An error occured" });
     });
 };
 
@@ -48,24 +50,27 @@ module.exports.login = (req, res, next) => {
         if (!user) return res.status(404).json({ message: "user not found" });
         let verify = bcrypt.compareSync(password, user.password);
         if (verify == false)
-          res
+          return res
             .status(500)
             .json({ message: "authentication failed or incorrect password" });
         let token = jwt.sign(
           { id: user._id, role: user.role },
           process.env.JWT_KEY
         );
-        res.status(200).json({
+        jwt.verify(token, process.env.JWT_KEY, function (err, decoded) {
+          console.log(err, decoded, process.env.JWT_KEY, token);
+        });
+        return res.status(200).json({
           message: { user, token },
         });
       } catch (error) {
         console.log(error.message);
-        res.status(500).json({ message: "An error occured" });
+        return res.status(500).json({ message: "An error occured" });
       }
     })
     .catch((error) => {
       console.log(error.message);
 
-      res.status(500).json({ message: "An error occured" });
+      return res.status(500).json({ message: "An error occured" });
     });
 };

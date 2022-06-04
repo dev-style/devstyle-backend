@@ -13,6 +13,7 @@ const goodieSchema = new Schema(
       type: String,
       required: true,
       lowercase: true,
+      unique: true,
     },
     fromCollection: {
       type: Schema.Types.ObjectId,

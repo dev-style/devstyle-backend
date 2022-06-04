@@ -12,6 +12,7 @@ router.post(
 );
 router.get("/collection/all", Collection.getAllCollections);
 router.get("/collection/:id", Collection.getOneCollection);
+router.get("/collection/goodies/:slug", Collection.getOneCollectionAndGoodies);
 router.put("/collection/update/:id", auth, Collection.updateOneCollection);
 router.delete("/collection/delete/:id", auth, Collection.deleteOneCollection);
 router.put(
@@ -20,6 +21,6 @@ router.put(
   auth,
   Collection.updateCollectionImage
 );
-router.put("/collection/update/views/:id", Collection.updateViews);
+router.put("/collection/update/views/:slug", Collection.updateViews);
 
 module.exports = router;
