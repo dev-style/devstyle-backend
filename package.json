@@ -10,6 +10,7 @@
   "author": "https://github.com/Gaetan-M",
   "license": "ISC",
   "dependencies": {
+    "@mailchimp/mailchimp_marketing": "^3.0.75",
     "admin-bro": "^3.2.5",
     "admin-bro-expressjs": "^2.1.1",
     "admin-bro-mongoose": "^0.5.2",

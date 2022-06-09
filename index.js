@@ -11,6 +11,8 @@ const Social = require("./routes/social_route.js");
 const Ambassador = require("./routes/ambassador_route.js");
 const Partner = require("./routes/partner_route.js");
 const Announcement = require("./routes/announcement_route.js");
+const Newsletter = require("./routes/newsletter_route.js");
+const Order = require("./routes/order_route.js");
 const Admin = require("./controllers/admin_controller");
 const bodyparser = require("body-parser");
 /*****cors error protection and data parsing*****/
@@ -51,5 +53,7 @@ app.use("/", Ambassador);
 app.use("/", Partner);
 app.use("/", Announcement);
 app.use("/", Authentication);
+app.use("/", Newsletter);
+app.use("/", Order);
 
 module.exports = app;
