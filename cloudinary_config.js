@@ -1,4 +1,4 @@
-const cloudinary = require("cloudinary");
+const cloudinary = require('cloudinary').v2
 require("dotenv").config;
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -6,20 +6,23 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-exports.uploads = (file, folder) => {
+exports.uploads = (file, folder, optionsOnUpload = {}) => {
   return new Promise((resolve) => {
     cloudinary.uploader.upload(
       file,
-      (result) => {
+      { resource_type: "auto",
+        folder: folder, 
+        ...optionsOnUpload
+      },
+      (error, result) => {
         resolve({
           url: result.url,
-          //   secure_url: result.secure_url,
+            secure_url: result.secure_url,
           //   id: result.public_id,
         });
       },
       {
-        resource_type: "auto",
-        folder: folder,
+       
       }
     );
   });

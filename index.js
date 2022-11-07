@@ -21,14 +21,17 @@ app.use((req, res, next) => {
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, DELETE, PATCH, OPTIONS"
   );
   next();
 });
 app.use(cors());
+
+app.use("/admin", Admin);
+
 app.use(bodyparser.json());
 app.use(
   bodyparser.urlencoded({
@@ -43,7 +46,6 @@ app.use(
 app.get("/", (req, res, next) => {
   res.status(200).json("Welcome to the otherside🙂");
 });
-app.use("/admin", Admin);
 app.use("/", Goodie);
 app.use("/", HeroSection);
 app.use("/", Collection);

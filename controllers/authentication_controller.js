@@ -58,7 +58,7 @@ module.exports.login = (req, res, next) => {
           process.env.JWT_KEY
         );
         jwt.verify(token, process.env.JWT_KEY, function (err, decoded) {
-          console.log(err, decoded, process.env.JWT_KEY, token);
+          console.log("Verified successfully");
         });
         return res.status(200).json({
           message: { user, token },

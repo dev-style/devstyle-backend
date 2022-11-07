@@ -117,7 +117,7 @@ module.exports.deleteOneCollection = (req, res, next) => {
 module.exports.updateCollectionImage = async (req, res, next) => {
   let id = req.params.id;
   const uploader = async (path) =>
-    await cloudinary.uploads(path, `DevStyle/Collection`);
+    await cloudinary.uploads(path, `DevStyle/Collections`);
   const { path } = req.file;
   const newPath = await uploader(path);
   fs.unlinkSync(path);

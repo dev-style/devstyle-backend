@@ -1,4 +1,5 @@
 const Goodie = require("../models/goodie_model.js");
+const Collection = require("../models/collection_model.js");
 const cloudinary = require("../cloudinary_config");
 const fs = require("fs");
 const { SchemaTypes, Schema } = require("mongoose");
@@ -23,7 +24,31 @@ module.exports.createGoodie = async (req, res, next) => {
   size = JSON.parse(req.body.size);
   try {
     const uploader = async (path) =>
-      await cloudinary.uploads(path, `DevStyle/Goodies`);
+      await cloudinary.uploads(path, `DevStyle/Goodies`, { transformation : [
+        {
+          overlay: "devstyle_watermark",
+          opacity: 10,
+          gravity: "north_west",
+          x: 5,
+          y: 5,
+          width: "0.5"
+        }, 
+        {
+          overlay: "devstyle_watermark",
+          opacity: 6.5,
+          gravity: "center",
+          width: "1.0",
+          angle: 45
+        },
+        {
+          overlay: "devstyle_watermark",
+          opacity: 10,
+          gravity: "south_east",
+          x: 5,
+          y: 5,
+          width: "0.5"
+        }
+      ]});
     for (const file of req.files) {
       const { path } = file;
       const newPath = await uploader(path);
@@ -34,6 +59,14 @@ module.exports.createGoodie = async (req, res, next) => {
       console.log("No images");
       return res.status(500).json({ message: "sorry an error occur" });
     }
+
+    let collectionSlug = await Collection.findOne({ _id: fromCollection })
+    collectionSlug = collectionSlug.slug??null
+    if (!collectionSlug){
+      res.status(500).json({ message: collectionSlug.message });
+    }
+    slug = collectionSlug + "-" + slug
+    
     const goodie = new Goodie({
       name,
       slug,
@@ -87,6 +120,7 @@ module.exports.getAllGoodies = (req, res, next) => {
 };
 
 module.exports.getOneGoodie = (req, res, next) => {
+  console.log(req.params.slug)
   Goodie.findOne({ slug: req.params.slug })
     .populate("fromCollection")
     .populate("size")
@@ -163,7 +197,31 @@ module.exports.updateGoodieImage = async (req, res, next) => {
 
   let urls = [];
   const uploader = async (path) =>
-    await cloudinary.uploads(path, `DevStyle/Goodie`);
+    await cloudinary.uploads(path, `DevStyle/Goodies`,  { transformation : [
+      {
+        overlay: "devstyle_watermark",
+        opacity: 15,
+        gravity: "north_west",
+        x: 5,
+        y: 5,
+        width: "0.5"
+      }, 
+      {
+        overlay: "devstyle_watermark",
+        opacity: 10.5,
+        gravity: "center",
+        width: "1.0",
+        angle: 45
+      },
+      {
+        overlay: "devstyle_watermark",
+        opacity: 15,
+        gravity: "south_east",
+        x: 5,
+        y: 5,
+        width: "0.5"
+      }
+    ]});
   for (const file of req.files) {
     const { path } = file;
     const newPath = await uploader(path);

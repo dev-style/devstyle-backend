@@ -1,5 +1,4 @@
 const multer = require("multer");
-const cloudinary = require("cloudinary");
 const path = require("path");
 
 module.exports = multer({

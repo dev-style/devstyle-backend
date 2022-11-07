@@ -102,7 +102,7 @@ module.exports.updatePartnerImage = async (req, res, next) => {
   let id = req.params.id;
   let urls = [];
   const uploader = async (path) =>
-    await cloudinary.uploads(path, `DevStyle/Partner`);
+    await cloudinary.uploads(path, `DevStyle/Partners`);
   for (const file of req.files) {
     const { path } = file;
     const newPath = await uploader(path);
