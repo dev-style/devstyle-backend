@@ -13,7 +13,7 @@ const Partner = require("./routes/partner_route.js");
 const Announcement = require("./routes/announcement_route.js");
 const Newsletter = require("./routes/newsletter_route.js");
 const Order = require("./routes/order_route.js");
-const Admin = require("./controllers/admin_controller");
+// const Admin = require("./controllers/admin_controller");
 const bodyparser = require("body-parser");
 /*****cors error protection and data parsing*****/
 app.use((req, res, next) => {
@@ -30,7 +30,7 @@ app.use((req, res, next) => {
 });
 app.use(cors());
 
-app.use("/admin", Admin);
+// app.use("/admin", Admin);
 
 app.use(bodyparser.json());
 app.use(
