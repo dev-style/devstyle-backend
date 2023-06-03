@@ -10,6 +10,8 @@
   "author": "https://github.com/Gaetan-M",
   "license": "ISC",
   "dependencies": {
+    "@forestadmin/agent": "^1.9.0",
+    "@forestadmin/datasource-mongoose": "^1.4.0",
     "@mailchimp/mailchimp_marketing": "^3.0.75",
     "admin-bro": "^3.2.5",
     "admin-bro-expressjs": "^2.1.1",
