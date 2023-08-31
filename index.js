@@ -13,6 +13,8 @@ const Partner = require("./routes/partner_route.js");
 const Announcement = require("./routes/announcement_route.js");
 const Newsletter = require("./routes/newsletter_route.js");
 const Order = require("./routes/order_route.js");
+const Affiliation = require("./routes/affiliation_route.js");
+
 // const Admin = require("./controllers/admin_controller");
 const bodyparser = require("body-parser");
 /*****cors error protection and data parsing*****/
@@ -57,5 +59,7 @@ app.use("/", Announcement);
 app.use("/", Authentication);
 app.use("/", Newsletter);
 app.use("/", Order);
+app.use("/", Affiliation);
+
 
 module.exports = app;
