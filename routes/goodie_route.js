@@ -26,3 +26,6 @@ router.put("/goodie/update/views/:slug", Goodie.updateViews);
 router.put("/goodie/update/likes/:slug", Goodie.updateLikes);
 
 module.exports = router;
+
+
+
