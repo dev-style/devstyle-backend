@@ -2,7 +2,6 @@ const Goodie = require("../models/goodie_model.js");
 const Collection = require("../models/collection_model.js");
 const cloudinary = require("../cloudinary_config");
 const fs = require("fs");
-const { SchemaTypes, Schema } = require("mongoose");
 
 module.exports.createGoodie = async (req, res, next) => {
   let urls = [];
@@ -24,31 +23,33 @@ module.exports.createGoodie = async (req, res, next) => {
   size = JSON.parse(req.body.size);
   try {
     const uploader = async (path) =>
-      await cloudinary.uploads(path, `DevStyle/Goodies`, { transformation : [
-        {
-          overlay: "devstyle_watermark",
-          opacity: 10,
-          gravity: "north_west",
-          x: 5,
-          y: 5,
-          width: "0.5"
-        }, 
-        {
-          overlay: "devstyle_watermark",
-          opacity: 6.5,
-          gravity: "center",
-          width: "1.0",
-          angle: 45
-        },
-        {
-          overlay: "devstyle_watermark",
-          opacity: 10,
-          gravity: "south_east",
-          x: 5,
-          y: 5,
-          width: "0.5"
-        }
-      ]});
+      await cloudinary.uploads(path, `DevStyle/Goodies`, {
+        transformation: [
+          {
+            overlay: "devstyle_watermark",
+            opacity: 10,
+            gravity: "north_west",
+            x: 5,
+            y: 5,
+            width: "0.5",
+          },
+          {
+            overlay: "devstyle_watermark",
+            opacity: 6.5,
+            gravity: "center",
+            width: "1.0",
+            angle: 45,
+          },
+          {
+            overlay: "devstyle_watermark",
+            opacity: 10,
+            gravity: "south_east",
+            x: 5,
+            y: 5,
+            width: "0.5",
+          },
+        ],
+      });
     for (const file of req.files) {
       const { path } = file;
       const newPath = await uploader(path);
@@ -60,13 +61,13 @@ module.exports.createGoodie = async (req, res, next) => {
       return res.status(500).json({ message: "sorry an error occur" });
     }
 
-    let collectionSlug = await Collection.findOne({ _id: fromCollection })
-    collectionSlug = collectionSlug.slug??null
-    if (!collectionSlug){
+    let collectionSlug = await Collection.findOne({ _id: fromCollection });
+    collectionSlug = collectionSlug.slug ?? null;
+    if (!collectionSlug) {
       res.status(500).json({ message: collectionSlug.message });
     }
-    slug = collectionSlug + "-" + slug
-    
+    slug = collectionSlug + "-" + slug;
+
     const goodie = new Goodie({
       name,
       slug,
@@ -80,9 +81,6 @@ module.exports.createGoodie = async (req, res, next) => {
       availableColors,
       backgroundColors,
       images: urls,
-      // image: url,
-      // color: availableColors[i],
-      // backgroundColor: backgroundColors[i],
       likes,
     });
 
@@ -108,7 +106,7 @@ module.exports.createGoodie = async (req, res, next) => {
 };
 
 module.exports.getAllGoodies = (req, res, next) => {
-  Goodie.find()
+  Goodie.find({ show: true })
     .then((results) => {
       res.status(200).json({ message: results });
     })
@@ -120,8 +118,8 @@ module.exports.getAllGoodies = (req, res, next) => {
 };
 
 module.exports.getOneGoodie = (req, res, next) => {
-  console.log(req.params.slug)
-  Goodie.findOne({ slug: req.params.slug })
+  console.log(req.params.slug);
+  Goodie.findOne({ slug: req.params.slug, show: true })
     .populate("fromCollection")
     .populate("size")
     .then((result) => {
@@ -135,7 +133,7 @@ module.exports.getOneGoodie = (req, res, next) => {
 };
 
 module.exports.getGoodiesOfCollection = (req, res, next) => {
-  Goodie.find({ fromCollection: req.params.collectionID })
+  Goodie.find({ fromCollection: req.params.collectionID, show: true })
     .then((result) => {
       res.status(200).json({ message: result });
     })
@@ -150,6 +148,7 @@ module.exports.getHotGoodiesOfCollection = (req, res, next) => {
   Goodie.find({
     fromCollection: req.params.collectionID,
     _id: { $ne: req.params.goodieID },
+    show: true,
   })
     .skip(Math.random() * 20)
     .sort({ views: -1, likes: -1 })
@@ -197,31 +196,33 @@ module.exports.updateGoodieImage = async (req, res, next) => {
 
   let urls = [];
   const uploader = async (path) =>
-    await cloudinary.uploads(path, `DevStyle/Goodies`,  { transformation : [
-      {
-        overlay: "devstyle_watermark",
-        opacity: 15,
-        gravity: "north_west",
-        x: 5,
-        y: 5,
-        width: "0.5"
-      }, 
-      {
-        overlay: "devstyle_watermark",
-        opacity: 10.5,
-        gravity: "center",
-        width: "1.0",
-        angle: 45
-      },
-      {
-        overlay: "devstyle_watermark",
-        opacity: 15,
-        gravity: "south_east",
-        x: 5,
-        y: 5,
-        width: "0.5"
-      }
-    ]});
+    await cloudinary.uploads(path, `DevStyle/Goodies`, {
+      transformation: [
+        {
+          overlay: "devstyle_watermark",
+          opacity: 15,
+          gravity: "north_west",
+          x: 5,
+          y: 5,
+          width: "0.5",
+        },
+        {
+          overlay: "devstyle_watermark",
+          opacity: 10.5,
+          gravity: "center",
+          width: "1.0",
+          angle: 45,
+        },
+        {
+          overlay: "devstyle_watermark",
+          opacity: 15,
+          gravity: "south_east",
+          x: 5,
+          y: 5,
+          width: "0.5",
+        },
+      ],
+    });
   for (const file of req.files) {
     const { path } = file;
     const newPath = await uploader(path);
@@ -278,7 +279,7 @@ module.exports.updateViews = (req, res, next) => {
 };
 
 module.exports.getNewGoodies = (req, res, next) => {
-  Goodie.find()
+  Goodie.find({ show: true })
     .skip(req.headers.skip)
     .limit(4)
     .sort({ createdAt: -1 })
@@ -294,7 +295,7 @@ module.exports.getNewGoodies = (req, res, next) => {
 };
 
 module.exports.getHotGoodies = (req, res, next) => {
-  Goodie.find()
+  Goodie.find({ show: true })
     .skip(req.headers.skip)
     .sort({ views: -1, likes: -1 })
     .limit(8)

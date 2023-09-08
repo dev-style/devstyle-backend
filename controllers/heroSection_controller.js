@@ -40,7 +40,7 @@ module.exports.createHeroSection = async (req, res, next) => {
 };
 
 module.exports.getAllHeroSections = (req, res, next) => {
-  HeroSection.find()
+  HeroSection.find({ show: true })
     .then((results) => {
       res.status(200).json({ message: results });
     })
@@ -52,7 +52,7 @@ module.exports.getAllHeroSections = (req, res, next) => {
 };
 
 module.exports.getOneHeroSection = (req, res, next) => {
-  HeroSection.findOne({ _id: req.params.id })
+  HeroSection.findOne({ _id: req.params.id, show: true })
     .then((result) => {
       res.status(200).json({ message: result });
     })
@@ -105,7 +105,6 @@ module.exports.updateHeroSectionImage = async (req, res, next) => {
       image: newPath,
       ...req.body,
     }
-    // { new: true }
   )
     .then((result) => {
       res.status(200).json({

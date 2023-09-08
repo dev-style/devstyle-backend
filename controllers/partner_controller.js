@@ -47,7 +47,7 @@ module.exports.createPartner = async (req, res, next) => {
 };
 
 module.exports.getAllPartners = (req, res, next) => {
-  Partner.find()
+  Partner.find({ show: true })
     .then((results) => {
       res.status(200).json({ message: results });
     })
@@ -59,7 +59,7 @@ module.exports.getAllPartners = (req, res, next) => {
 };
 
 module.exports.getOnePartner = (req, res, next) => {
-  Partner.findOne({ _id: req.params.id })
+  Partner.findOne({ _id: req.params.id, show: true })
     .then((result) => {
       res.status(200).json({ message: result });
     })
