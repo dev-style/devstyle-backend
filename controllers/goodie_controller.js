@@ -150,7 +150,7 @@ module.exports.getHotGoodiesOfCollection = (req, res, next) => {
     _id: { $ne: req.params.goodieID },
     show: true,
   })
-    .skip(req.headers.skip)
+    .skip(Math.random() * 20)
     .sort({ views: -1, likes: -1 })
     .limit(4)
     .then((result) => {

@@ -6,6 +6,7 @@ mailchimp.setConfig({
   server: process.env.MAILCHIMP_SERVER_PREFIX,
 });
 module.exports.createAudience = async (req, res, next) => {
+  console.log(true, req)
   const event = {
     name: "_DevStyle Newsletter",
   };

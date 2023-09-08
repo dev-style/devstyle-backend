@@ -47,7 +47,7 @@ app.use((req, res, next) => {
 });
 app.use(cors());
 
-//app.use("/admin", Admin);
+// app.use("/admin", Admin);
 
 app.use(bodyparser.json());
 app.use(
