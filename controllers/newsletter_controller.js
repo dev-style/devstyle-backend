@@ -6,7 +6,6 @@ mailchimp.setConfig({
   server: process.env.MAILCHIMP_SERVER_PREFIX,
 });
 module.exports.createAudience = async (req, res, next) => {
-  console.log(true, req)
   const event = {
     name: "_DevStyle Newsletter",
   };
@@ -52,10 +51,14 @@ module.exports.createAudience = async (req, res, next) => {
 module.exports.saveEmail = async (req, res, next) => {
   let { email } = req.body;
 
+  let isDuplicate = (await Newsletter.findOne({ email: email })) ? true : false;
+  console.log(isDuplicate);
+  if (isDuplicate) {
+    return res.status(202).json({ message: "Subscriber already exists" });
+  }
   const NewNewsletter = new Newsletter({
     email,
   });
-
   NewNewsletter.save()
     .then((_) => {
       async function run() {

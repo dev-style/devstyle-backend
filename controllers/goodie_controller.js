@@ -2,6 +2,7 @@ const Goodie = require("../models/goodie_model.js");
 const Collection = require("../models/collection_model.js");
 const cloudinary = require("../cloudinary_config");
 const fs = require("fs");
+const mongoose = require("mongoose");
 
 module.exports.createGoodie = async (req, res, next) => {
   let urls = [];
@@ -118,7 +119,6 @@ module.exports.getAllGoodies = (req, res, next) => {
 };
 
 module.exports.getOneGoodie = (req, res, next) => {
-  console.log(req.params.slug);
   Goodie.findOne({ slug: req.params.slug, show: true })
     .populate("fromCollection")
     .populate("size")
@@ -144,15 +144,16 @@ module.exports.getGoodiesOfCollection = (req, res, next) => {
     });
 };
 
-module.exports.getHotGoodiesOfCollection = (req, res, next) => {
-  Goodie.find({
-    fromCollection: req.params.collectionID,
-    _id: { $ne: req.params.goodieID },
-    show: true,
-  })
-    .skip(Math.random() * 20)
-    .sort({ views: -1, likes: -1 })
-    .limit(4)
+module.exports.getHotGoodiesOfCollection = async (req, res, next) => {
+  Goodie.aggregate([
+    {
+      $match: {
+        fromCollection: mongoose.Types.ObjectId(req.params.collectionID),
+        _id: { $ne: mongoose.Types.ObjectId(req.params.goodieID) },
+      },
+    },
+    { $sample: { size: 4 } },
+  ])
     .then((result) => {
       res.status(200).json({ message: result });
     })
