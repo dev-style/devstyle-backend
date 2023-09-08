@@ -10,6 +10,10 @@ const heroSectionSchema = new Schema(
       required: true,
     },
     image: {},
+    show: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

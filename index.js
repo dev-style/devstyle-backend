@@ -13,7 +13,6 @@ const Partner = require("./routes/partner_route.js");
 const Announcement = require("./routes/announcement_route.js");
 const Newsletter = require("./routes/newsletter_route.js");
 const Order = require("./routes/order_route.js");
-const Admin = require("./controllers/admin_controller");
 const bodyparser = require("body-parser");
 
 require("dotenv").config();
@@ -30,7 +29,6 @@ createAgent({
 })
   // Create your Mongoose datasource
   .addDataSource(createMongooseDataSource(dbConnect, { flattenMode: "none" }))
-  // Replace "myExpressApp" by your Express application
   .mountOnExpress(app)
   .start();
 
@@ -57,9 +55,6 @@ app.use(
     extended: true,
   })
 );
-//app.use(express.json({limit:"100mb"}));
-//app.use(express.urlencoded({limit:"100mb"}));
-//app.use(compression())
 
 /*******endpoints******/
 app.get("/", (req, res, next) => {
