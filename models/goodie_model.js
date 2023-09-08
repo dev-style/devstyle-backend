@@ -48,6 +48,10 @@ const goodieSchema = new Schema(
     likes: {
       type: Number,
     },
+    show: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

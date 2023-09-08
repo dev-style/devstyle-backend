@@ -43,7 +43,7 @@ module.exports.createCollection = async (req, res, next) => {
 };
 
 module.exports.getAllCollections = (req, res, next) => {
-  Collection.find()
+  Collection.find({ show: true })
     .then((results) => {
       res.status(200).json({ message: results });
     })
@@ -67,7 +67,7 @@ module.exports.getOneCollection = (req, res, next) => {
 };
 
 module.exports.getOneCollectionAndGoodies = (req, res, next) => {
-  Collection.findOne({ slug: req.params.slug })
+  Collection.findOne({ slug: req.params.slug, show: true })
     .then((collection) => {
       Goodie.find({ fromCollection: collection._id })
         .then((goodies) => {

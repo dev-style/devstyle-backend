@@ -20,6 +20,10 @@ const collectionSchema = new Schema(
     },
     image: {},
     views: Number,
+    show: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

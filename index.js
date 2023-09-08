@@ -13,24 +13,41 @@ const Partner = require("./routes/partner_route.js");
 const Announcement = require("./routes/announcement_route.js");
 const Newsletter = require("./routes/newsletter_route.js");
 const Order = require("./routes/order_route.js");
-const Admin = require("./controllers/admin_controller");
 const bodyparser = require("body-parser");
+
+require("dotenv").config();
+
+const { createAgent } = require("@forestadmin/agent");
+const {
+  createMongooseDataSource,
+} = require("@forestadmin/datasource-mongoose");
+
+createAgent({
+  authSecret: process.env.FOREST_AUTH_SECRET,
+  envSecret: process.env.FOREST_ENV_SECRET,
+  isProduction: true,
+})
+  // Create your Mongoose datasource
+  .addDataSource(createMongooseDataSource(dbConnect, { flattenMode: "none" }))
+  .mountOnExpress(app)
+  .start();
+
 /*****cors error protection and data parsing*****/
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
-    );
-    res.setHeader(
-      "Access-Control-Allow-Methods",
-      "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
   );
   next();
 });
 app.use(cors());
 
-app.use("/admin", Admin);
+//app.use("/admin", Admin);
 
 app.use(bodyparser.json());
 app.use(
@@ -38,9 +55,6 @@ app.use(
     extended: true,
   })
 );
-//app.use(express.json({limit:"100mb"}));
-//app.use(express.urlencoded({limit:"100mb"}));
-//app.use(compression())
 
 /*******endpoints******/
 app.get("/", (req, res, next) => {
