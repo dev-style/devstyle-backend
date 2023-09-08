@@ -43,7 +43,7 @@ module.exports.createAmbassador = async (req, res, next) => {
 };
 
 module.exports.getAllAmbassadors = (req, res, next) => {
-  Ambassador.find()
+  Ambassador.find({ show: true })
     .then((results) => {
       res.status(200).json({ message: results });
     })
@@ -55,7 +55,7 @@ module.exports.getAllAmbassadors = (req, res, next) => {
 };
 
 module.exports.getOneAmbassador = (req, res, next) => {
-  Ambassador.findOne({ _id: req.params.id })
+  Ambassador.findOne({ _id: req.params.id, show: true })
     .then((result) => {
       res.status(200).json({ message: result });
     })

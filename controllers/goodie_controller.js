@@ -82,9 +82,6 @@ module.exports.createGoodie = async (req, res, next) => {
       availableColors,
       backgroundColors,
       images: urls,
-      // image: url,
-      // color: availableColors[i],
-      // backgroundColor: backgroundColors[i],
       likes,
     });
 
@@ -110,7 +107,7 @@ module.exports.createGoodie = async (req, res, next) => {
 };
 
 module.exports.getAllGoodies = (req, res, next) => {
-  Goodie.find()
+  Goodie.find({ show: true })
     .then((results) => {
       res.status(200).json({ message: results });
     })
@@ -122,8 +119,7 @@ module.exports.getAllGoodies = (req, res, next) => {
 };
 
 module.exports.getOneGoodie = (req, res, next) => {
-  console.log(req.params.slug);
-  Goodie.findOne({ slug: req.params.slug })
+  Goodie.findOne({ slug: req.params.slug, show: true })
     .populate("fromCollection")
     .populate("size")
     .then((result) => {
@@ -137,7 +133,7 @@ module.exports.getOneGoodie = (req, res, next) => {
 };
 
 module.exports.getGoodiesOfCollection = (req, res, next) => {
-  Goodie.find({ fromCollection: req.params.collectionID })
+  Goodie.find({ fromCollection: req.params.collectionID, show: true })
     .then((result) => {
       res.status(200).json({ message: result });
     })
@@ -284,7 +280,7 @@ module.exports.updateViews = (req, res, next) => {
 };
 
 module.exports.getNewGoodies = (req, res, next) => {
-  Goodie.find()
+  Goodie.find({ show: true })
     .skip(req.headers.skip)
     .limit(4)
     .sort({ createdAt: -1 })
@@ -300,7 +296,7 @@ module.exports.getNewGoodies = (req, res, next) => {
 };
 
 module.exports.getHotGoodies = (req, res, next) => {
-  Goodie.find()
+  Goodie.find({ show: true })
     .skip(req.headers.skip)
     .sort({ views: -1, likes: -1 })
     .limit(8)
