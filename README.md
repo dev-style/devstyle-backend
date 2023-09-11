@@ -26,7 +26,7 @@
 
 ### Frontend project repo
 
-[🖥️Devstyle frontend here](https://github.com/artemesian/devstyle)
+[🖥️Devstyle frontend here](https://github.com/dev-style/devstyle)
 
 ## Quick Start
 
